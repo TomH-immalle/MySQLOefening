@@ -5,7 +5,7 @@ namespace MySQLOefening
 {
     class Program
     {
-        static string version = "0.1";
+        static string version = "0.3";
         public static void Query()
         {
             MySqlConnection comm = new MySqlConnection();
@@ -29,35 +29,46 @@ namespace MySQLOefening
             comm.Open();
 
             cmd.CommandText = "SELECT Name FROM Country";
+            var reader = cmd.ExecuteReader();
 
-            Console.WriteLine("{0}", cmd.ExecuteReader());
+            while (reader.Read())
+            {
+                Console.WriteLine(String.Format("{0}", reader[0]));
+            }
         }
 
         static void Main(string[] args)
         {
-
-
-
-
-            if (args.Length > 0)
+            Console.WriteLine("Dit is versie {0} van DBQuerier.", version);
+            Console.WriteLine("Kies je optie.");
+            Console.WriteLine("1. Hoeveel landen zijn er.");
+            Console.WriteLine("2. Welke landen zijn er.");
+            int antw = Convert.ToInt32(Console.ReadLine());
+            if (antw == 1)
             {
-                switch (args[0])
-                {
-                    case "-v":
-                        Console.WriteLine("Versie {0}", version);
-                        break;
-                    case "-allcountries":
-                        Query();
-                        break;
-                    case "-countries":
-                        Query2();
-                        break;
-                    default:
-                        Console.WriteLine("Onbekend argument");
-                        break;
-                }
-                //Console.WriteLine(args[0]);
+                Query();
+            }
+            /*switch (args[0])
+            {
+                case "-v":
+                    Console.WriteLine("Versie {0}", version);
+                    break;
+                case "-allcountries":
+                    Query();
+                    break;
+                case "-countries":
+                    Query2();
+                    break;
+                default:
+                    Console.WriteLine("Onbekend argument");
+                    break;
+            }*/
+
+            else
+            {
+                Query2();
+
+            }
             }
         }
     }
-}
