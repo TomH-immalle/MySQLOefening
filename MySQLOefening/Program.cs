@@ -5,15 +5,26 @@ namespace MySQLOefening
 {
     class Program
     {
-        static string version = "0.4";
-        public static void Query()
+        static string version = "0.5";
+        static string ip;
+        static string name;
+        static string pwd;
+
+        private static MySqlCommand getCommand()
         {
             MySqlConnection comm = new MySqlConnection();
-            comm.ConnectionString = "Server = 192.168.56.101;Port = 3306; Database = world;Uid = root;Pwd = root; ";
+            comm.ConnectionString = "Server = "+ip+";Port = 3306; Database = world;Uid = "+name+";Pwd = "+pwd+"; ";
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = comm;
 
             comm.Open();
+
+            return cmd;
+        }
+
+        public static void Query()
+        {
+            var cmd = getCommand();
 
             cmd.CommandText = "SELECT count(*) FROM Country";
 
@@ -21,12 +32,7 @@ namespace MySQLOefening
         }
         public static void Query2()
         {
-            MySqlConnection comm = new MySqlConnection();
-            comm.ConnectionString = "Server = 192.168.56.101;Port = 3306; Database = world;Uid = root;Pwd = root; ";
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.Connection = comm;
-
-            comm.Open();
+            var cmd = getCommand();
 
             cmd.CommandText = "SELECT Name FROM Country";
             var reader = cmd.ExecuteReader();
@@ -39,12 +45,7 @@ namespace MySQLOefening
 
         public static void Query3(string zoekParameter)
         {
-            MySqlConnection comm = new MySqlConnection();
-            comm.ConnectionString = "Server = 192.168.56.101;Port = 3306; Database = world;Uid = root;Pwd = root; ";
-            MySqlCommand cmd = new MySqlCommand();
-            cmd.Connection = comm;
-
-            comm.Open();
+            var cmd = getCommand();
 
             cmd.CommandText = "SELECT * FROM Country WHERE Name LIKE @zoekParameter";
             cmd.Parameters.AddWithValue("@zoekParameter", "%"+ zoekParameter +"%");
@@ -59,29 +60,52 @@ namespace MySQLOefening
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Dit is versie {0} van DBQuerier.", version);
-            Console.WriteLine("Kies je optie.");
-            Console.WriteLine("1. Hoeveel landen zijn er.");
-            Console.WriteLine("2. Welke landen zijn er.");
-            Console.WriteLine("3. Een land zoeken.");
-            int antw = Convert.ToInt32(Console.ReadLine());
-            if (antw == 1)
+            if (args.Length == 1)
             {
-                Query();
-            }
-
-            else if (antw == 2)
-            {
-                Query2();
+                if (args[0] == "help") 
+                {
+                Console.WriteLine("Geef ip, username en password in.");
+                return;
+                }
+                return;
 
             }
-            else if (antw == 3)
+            else if(args.Length != 3)
             {
-                Console.WriteLine("Welk land zoek je?");
-                string antw2 = Console.ReadLine();
-                Query3(antw2);
+                Console.WriteLine("Foute argumenten.");
+                return;
             }
+            ip = args[0];
+            name = args[1];
+            pwd = args[2];
+            while (true)
+            {   
+                Console.WriteLine();
+                Console.WriteLine("Dit is versie {0} van WordDBQuerier.", version);
+                Console.WriteLine();
+                Console.WriteLine("Kies je optie.");
+                Console.WriteLine("1. Hoeveel landen zijn er.");
+                Console.WriteLine("2. Welke landen zijn er.");
+                Console.WriteLine("3. Een land zoeken.");
+                Console.WriteLine();
+                int antw = Convert.ToInt32(Console.ReadLine());
+                if (antw == 1)
+                {
+                    Query();
+                }
 
+                else if (antw == 2)
+                {
+                    Query2();
+
+                }
+                else if (antw == 3)
+                {
+                    Console.WriteLine("Welk land zoek je?");
+                    string antw2 = Console.ReadLine();
+                    Query3(antw2);
+                }
+            }
 
             /*switch (args[0])
            {
